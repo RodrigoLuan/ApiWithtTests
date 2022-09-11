@@ -2,7 +2,6 @@ package br.com.devdicas.api.resources;
 
 import br.com.devdicas.api.domain.User;
 import br.com.devdicas.api.services.UserService;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
