@@ -1,6 +1,7 @@
 package br.com.devdicas.api.resources;
 
 
+import br.com.devdicas.api.domain.User;
 import br.com.devdicas.api.domain.UserDTO;
 import br.com.devdicas.api.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -24,5 +28,12 @@ public class UserResource {
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserDTO>findById(@PathVariable Integer id){
         return ResponseEntity.ok().body(mapper.map(userService.findById(id), UserDTO.class));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> findAll(){
+        return ResponseEntity.ok()
+                .body( userService.findAll()
+                        .stream().map(obj -> mapper.map(obj, UserDTO.class)).collect(Collectors.toList()));
     }
 }
