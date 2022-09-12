@@ -3,6 +3,7 @@ package br.com.devdicas.api.services.impl;
 import br.com.devdicas.api.domain.User;
 import br.com.devdicas.api.domain.UserDTO;
 import br.com.devdicas.api.repositories.UserRepository;
+import br.com.devdicas.api.services.exceptions.DataIntegratyViolationException;
 import br.com.devdicas.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,7 @@ import org.modelmapper.ModelMapper;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -89,11 +90,44 @@ class UserServiceImplTest {
     }
 
     @Test
-    void create() {
+    void whenCreateThenReturnSuccess() {
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(modelMapper.map(any(UserDTO.class), any())).thenReturn(user);
+
+        User response = userService.create(userDTO);
+        assertNotNull(response);
+        assertEquals(response, user);
+        assertEquals(response.getId(), ID);
+        assertEquals(response.getName(), Name);
+        assertEquals(response.getEmail(), EMAIL);
+        assertEquals(response.getPassword(), PASSWORD);
     }
 
     @Test
-    void update() {
+    void whenCreateThenReturnDataIntegrityViolationException() {
+        when(userRepository.findByEmail(anyString())).thenReturn(userOptional);
+
+       try{
+           userOptional.get().setId(2);
+           userService.create(userDTO);
+       }catch (Exception e){
+           assertEquals(DataIntegratyViolationException.class, e.getClass());
+           assertEquals("Email já cadastrado!", e.getMessage());
+       }
+    }
+
+    @Test
+    void whenUpdateThenReturnSuccess() {
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(modelMapper.map(any(UserDTO.class), any())).thenReturn(user);
+
+        User response = userService.update(userDTO);
+        assertNotNull(response);
+        assertEquals(response, user);
+        assertEquals(response.getId(), ID);
+        assertEquals(response.getName(), Name);
+        assertEquals(response.getEmail(), EMAIL);
+        assertEquals(response.getPassword(), PASSWORD);
     }
 
     @Test
