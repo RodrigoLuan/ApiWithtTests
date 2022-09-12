@@ -15,10 +15,10 @@ import org.modelmapper.ModelMapper;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 class UserServiceImplTest {
@@ -28,6 +28,7 @@ class UserServiceImplTest {
     public static final String EMAIL = "asda@teste";
     public static final String PASSWORD = "123456";
     public static final String OBJETO_NÃO_ENCONTRADO = "Objeto não encontrado";
+    public static final int INDEX = 0;
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -73,7 +74,18 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findAll() {
+    void whenFindAllThenReturnAnListOfUser() {
+        when(userRepository.findAll()).thenReturn(List.of(user));
+
+        List<User> response = userService.findAll();
+
+        assertNotNull(response);
+        assertEquals(response.size(), 1);
+        assertEquals(response.get(INDEX), user);
+        assertEquals(response.get(INDEX).getId(), ID);
+        assertEquals(response.get(INDEX).getName(), Name);
+        assertEquals(response.get(INDEX).getEmail(), EMAIL);
+        assertEquals(response.get(INDEX).getPassword(), PASSWORD);
     }
 
     @Test
