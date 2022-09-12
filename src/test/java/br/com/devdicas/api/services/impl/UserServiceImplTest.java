@@ -3,6 +3,7 @@ package br.com.devdicas.api.services.impl;
 import br.com.devdicas.api.domain.User;
 import br.com.devdicas.api.domain.UserDTO;
 import br.com.devdicas.api.repositories.UserRepository;
+import br.com.devdicas.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.modelmapper.ModelMapper;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -25,6 +27,7 @@ class UserServiceImplTest {
     public static final String Name = "Teste";
     public static final String EMAIL = "asda@teste";
     public static final String PASSWORD = "123456";
+    public static final String OBJETO_NÃO_ENCONTRADO = "Objeto não encontrado";
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -56,6 +59,17 @@ class UserServiceImplTest {
         assertEquals(response.getName(), Name);
         assertEquals(response.getEmail(), EMAIL);
         assertEquals(response.getPassword(), PASSWORD);
+    }
+
+    @Test
+    void whenFindByIdThenReturnAnObjectNotFoundException() {
+        when(userRepository.findById(anyInt())).thenThrow(new ObjectNotFoundException(OBJETO_NÃO_ENCONTRADO));
+        try{
+            userService.findById(ID);
+        } catch (Exception e) {
+            assertEquals(ObjectNotFoundException.class, e.getClass());
+            assertEquals(OBJETO_NÃO_ENCONTRADO, e.getMessage());
+        }
     }
 
     @Test
