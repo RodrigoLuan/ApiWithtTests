@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -145,7 +146,12 @@ class UserServiceImplTest {
     }
 
     @Test
-    void delete() {
+    void deleteWithSuccess() {
+        when(userRepository.findById(anyInt())).thenReturn(userOptional);
+        doNothing().when(userRepository).deleteById(anyInt());
+        userService.delete(ID);
+
+        Mockito.verify(userRepository, Mockito.times(1)).deleteById(anyInt());
     }
 
     @Test
