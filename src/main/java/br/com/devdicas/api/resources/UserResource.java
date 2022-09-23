@@ -37,6 +37,7 @@ public class UserResource {
                 .body( userService.findAll()
                         .stream().map(obj -> mapper.map(obj, UserDTO.class)).collect(Collectors.toList()));
     }
+
     @PostMapping
     public ResponseEntity<UserDTO> create(@RequestBody UserDTO obj){
         URI uri = ServletUriComponentsBuilder
